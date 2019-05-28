@@ -126,11 +126,10 @@ public class Connectivity {
                             "' and user.user_password = '"+ password +"'");
              rs.next();
              String level = rs.getString("user_level");
-             System.out.println(level);
              if(level.equals("admin"))
-                 state = 1;
-             else if(level.equals("penghuni"))
                  state = 2;
+             else if(level.equals("penghuni"))
+                 state = 1;
              
         }catch(SQLException e){
             System.out.println("Error : " + e.getMessage());

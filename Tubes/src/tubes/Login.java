@@ -110,7 +110,7 @@ public class Login extends javax.swing.JFrame {
          this.dispose();
         }
         else{
-         JOptionPane.showMessageDialog(this, "Maaf, Username atau password anda salah!,user = "+username+" password = "+password, "Error", JOptionPane.ERROR_MESSAGE);
+         JOptionPane.showMessageDialog(this, "Maaf, Username atau password anda salah!","Error", JOptionPane.ERROR_MESSAGE);
         }
     }//GEN-LAST:event_ButtonLoginActionPerformed
 

@@ -7,7 +7,9 @@
 package tubes;
 
 import java.awt.event.ActionListener;
+import java.sql.ResultSet;
 import javax.swing.JComboBox;
+import javax.swing.table.DefaultTableModel;
 
 /**
  *
@@ -17,15 +19,52 @@ public class FasilitasRuangan extends javax.swing.JFrame {
     //inisialisasi variable
     private Connectivity con;
     private int state;
+    private String tipe;
+    private String Status;
+    private ResultSet result;
      
     public FasilitasRuangan(int state) {
         initComponents();
         //membuat kelas koneksi
         con = new Connectivity();
+        //Membuat combo box tipe ruangan
         String[] list_tipe;
         int jumlah = con.GetJumlahTipe();
         list_tipe = con.GetNamaTipe(jumlah);
-        Combotipe.setModel(new javax.swing.DefaultComboBoxModel(list_tipe));
+        comboTipe.setModel(new javax.swing.DefaultComboBoxModel(list_tipe));
+        //membuat combo box status ruangan
+        String[] list_status = {"ditempati","kosong"};
+        comboStatus.setModel(new javax.swing.DefaultComboBoxModel(list_status));
+        //set kolom tabel untuk tidak terlihat
+        jTable1.setVisible(false);
+    }
+    private void table(String tipe, String status){
+        DefaultTableModel tb = new DefaultTableModel();
+        tb.addColumn("Nomor Kamar");
+        tb.addColumn("Nama Fasilitas");
+        tb.addColumn("Kuantitas");
+        tb.addColumn("Kondisi");
+        jTable1.setModel(tb);
+        try{
+             con = new Connectivity();
+             result = con.ExecQuery("select "
+                     + "             fasilitas_ruangan.kamar_no,fasilitas.fasilitas_nama,fasilitas_ruangan.fr_kuantitas,fasilitas_ruangan.fr_kondisi "
+                     + "             from fasilitas inner join fasilitas_ruangan inner join ruangan inner join type_ruangan on "
+                     + "             fasilitas_ruangan.fasilitas_id = fasilitas.fasilitas_id and fasilitas_ruangan.kamar_no = ruangan.ruangan_no and ruangan.type_id = type_ruangan.type_id"
+                     + "             where type_ruangan.type_nama = '"+ tipe +"' and ruangan.ruangan_status = '"+ status +"'"
+                             + "     order by fasilitas_ruangan.kamar_no");
+             while(result.next()){
+                    tb.addRow(new Object[]{
+                    result.getString("kamar_no"),
+                    result.getString("fasilitas_nama"),
+                    result.getString("fr_kuantitas"),
+                    result.getString("fr_kondisi")
+                    });
+                }
+        }catch(Exception ex){
+             
+                
+        }
     }
 
     @SuppressWarnings("unchecked")
@@ -35,7 +74,11 @@ public class FasilitasRuangan extends javax.swing.JFrame {
         jSeparator1 = new javax.swing.JSeparator();
         jLabel1 = new javax.swing.JLabel();
         buttonKembali = new javax.swing.JButton();
-        Combotipe = new javax.swing.JComboBox<>();
+        comboTipe = new javax.swing.JComboBox<>();
+        comboStatus = new javax.swing.JComboBox<>();
+        jButton1 = new javax.swing.JButton();
+        jScrollPane1 = new javax.swing.JScrollPane();
+        jTable1 = new javax.swing.JTable();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
@@ -48,12 +91,34 @@ public class FasilitasRuangan extends javax.swing.JFrame {
             }
         });
 
-        Combotipe.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Item 1", "Item 2", "Item 3", "Item 4" }));
-        Combotipe.addActionListener(new java.awt.event.ActionListener() {
+        comboTipe.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Item 1", "Item 2", "Item 3", "Item 4" }));
+        comboTipe.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                CombotipeActionPerformed(evt);
+                comboTipeActionPerformed(evt);
             }
         });
+
+        comboStatus.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Item 1", "Item 2", "Item 3", "Item 4" }));
+
+        jButton1.setText("Cek Fasilitas");
+        jButton1.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton1ActionPerformed(evt);
+            }
+        });
+
+        jTable1.setModel(new javax.swing.table.DefaultTableModel(
+            new Object [][] {
+                {null, null, null, null},
+                {null, null, null, null},
+                {null, null, null, null},
+                {null, null, null, null}
+            },
+            new String [] {
+                "Nomor Kamar", "Nama Fasilitas", "Kuantitas", "Kondisi"
+            }
+        ));
+        jScrollPane1.setViewportView(jTable1);
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
@@ -61,15 +126,27 @@ public class FasilitasRuangan extends javax.swing.JFrame {
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addComponent(jSeparator1)
             .addGroup(layout.createSequentialGroup()
-                .addGap(155, 155, 155)
-                .addComponent(jLabel1)
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
-                .addContainerGap(15, Short.MAX_VALUE)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(Combotipe, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(buttonKembali))
-                .addGap(316, 316, 316))
+                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+                        .addContainerGap(15, Short.MAX_VALUE)
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                            .addGroup(layout.createSequentialGroup()
+                                .addComponent(comboTipe, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addComponent(comboStatus, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                .addComponent(jButton1))
+                            .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 375, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                    .addGroup(layout.createSequentialGroup()
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addGroup(layout.createSequentialGroup()
+                                .addGap(155, 155, 155)
+                                .addComponent(jLabel1))
+                            .addGroup(layout.createSequentialGroup()
+                                .addContainerGap()
+                                .addComponent(buttonKembali)))
+                        .addGap(0, 0, Short.MAX_VALUE)))
+                .addContainerGap())
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -79,8 +156,13 @@ public class FasilitasRuangan extends javax.swing.JFrame {
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addComponent(jSeparator1, javax.swing.GroupLayout.PREFERRED_SIZE, 10, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(Combotipe, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 232, Short.MAX_VALUE)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(comboTipe, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(comboStatus, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jButton1))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 301, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(18, 18, 18)
                 .addComponent(buttonKembali)
                 .addContainerGap())
         );
@@ -89,15 +171,27 @@ public class FasilitasRuangan extends javax.swing.JFrame {
     }// </editor-fold>//GEN-END:initComponents
 
     private void buttonKembaliActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_buttonKembaliActionPerformed
-        // TODO add your handling code here:
+        // Tombol Kembali
         this.dispose();
         new UI(state).setVisible(true);
     }//GEN-LAST:event_buttonKembaliActionPerformed
 
-    private void CombotipeActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_CombotipeActionPerformed
+    private void comboTipeActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_comboTipeActionPerformed
         // TODO add your handling code here:
        
-    }//GEN-LAST:event_CombotipeActionPerformed
+    }//GEN-LAST:event_comboTipeActionPerformed
+
+    private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
+        //Tombol cek Fasilitas
+        String tipe;
+        String status;
+        
+        tipe = comboTipe.getSelectedItem().toString();
+        status = comboStatus.getSelectedItem().toString();
+        
+        jTable1.setVisible(true);
+        table(tipe,status);
+    }//GEN-LAST:event_jButton1ActionPerformed
 
     /**
      * @param args the command line arguments
@@ -135,10 +229,14 @@ public class FasilitasRuangan extends javax.swing.JFrame {
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    private javax.swing.JComboBox<String> Combotipe;
     private javax.swing.JButton buttonKembali;
+    private javax.swing.JComboBox<String> comboStatus;
+    private javax.swing.JComboBox<String> comboTipe;
+    private javax.swing.JButton jButton1;
     private javax.swing.JLabel jLabel1;
+    private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JSeparator jSeparator1;
+    private javax.swing.JTable jTable1;
     // End of variables declaration//GEN-END:variables
 
 }
