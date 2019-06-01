@@ -37,38 +37,6 @@ public class Connectivity {
         
         return rs;
     }
-    public int GetColumnNumber(ResultSet rs){
-        int column = 0;
-        try{
-            con = DriverManager.getConnection("jdbc:mysql://localhost/asrama?"+"user=root&password=");
-            stmt = con.createStatement();
-            rsm = rs.getMetaData();
-            column = rsm.getColumnCount();
-        }catch(SQLException e){
-            System.out.println("Error : " + e.getMessage());
-            System.out.println("SQL State : "+e.getSQLState());
-            System.out.println("Error Code : "+e.getErrorCode());
-        }
-        
-        return column;
-    }
-    public ArrayList GetColumnName(ResultSet rs,int column){
-        ArrayList columnName = null;
-        try{
-            con = DriverManager.getConnection("jdbc:mysql://localhost/asrama?"+"user=root&password=");
-            stmt = con.createStatement();
-            rsm = rs.getMetaData();
-            for(int i = 1; i <= column;i++){
-                columnName.add(rsm.getColumnName(i));
-            }
-        }catch(SQLException e){
-            System.out.println("Error : " + e.getMessage());
-            System.out.println("SQL State : "+e.getSQLState());
-            System.out.println("Error Code : "+e.getErrorCode());
-        }
-        
-        return columnName;
-    }
     
     public String[] GetNamaTipe(int jumlah){
         String[] listNama = new String[jumlah];
@@ -113,6 +81,52 @@ public class Connectivity {
         }finally{ 
            return jumlah;
         }
+    }
+    public int GetJumlahKamar(){
+        int jumlah = 0;
+        
+        try{
+            //menciptakan koneksi dan membuat statement ke database
+             con = DriverManager.getConnection("jdbc:mysql://localhost/asrama?"+"user=root&password=");
+             stmt = con.createStatement();
+            //menjalankan query dan dimasukkan ke objek rs
+             rs = ExecQuery("select * from getjumlahkamar");
+             rs.next();
+             jumlah = rs.getInt("ruangan_no");
+             
+        }catch(SQLException e){
+            System.out.println("Error : " + e.getMessage());
+            System.out.println("SQL State : "+e.getSQLState());
+            System.out.println("Error Code : "+e.getErrorCode());
+            System.out.println("Error Di proses count!");
+        }finally{ 
+           return jumlah;
+        }
+    }
+    public String[] nomorKamar(int jumlahkamar){
+        String[] nomorkamar = new String[jumlahkamar];
+        try{
+            //menciptakan koneksi dan membuat statement ke database
+             con = DriverManager.getConnection("jdbc:mysql://localhost/asrama?"+"user=root&password=");
+             stmt = con.createStatement();
+            //menjalankan query dan dimasukkan ke objek rs
+             rs = ExecQuery("select ruangan_no from ruangan");
+             int i = 0;
+             while(rs.next()){
+                 nomorkamar[i] = rs.getString("ruangan_no");
+                 i++;
+             }
+        }catch(SQLException e){
+            System.out.println("Error : " + e.getMessage());
+            System.out.println("SQL State : "+e.getSQLState());
+            System.out.println("Error Code : "+e.getErrorCode());
+            System.out.println("Error Di proses pembuatan list nomor kamar!");
+        }finally{
+            if(nomorkamar == null)
+                System.out.println("null!");
+            return nomorkamar;
+        }
+        
     }
     
     public int Login(String username,String password){

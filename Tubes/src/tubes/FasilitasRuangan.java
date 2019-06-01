@@ -27,18 +27,17 @@ public class FasilitasRuangan extends javax.swing.JFrame {
         initComponents();
         //membuat kelas koneksi
         con = new Connectivity();
-        //Membuat combo box tipe ruangan
-        String[] list_tipe;
-        int jumlah = con.GetJumlahTipe();
-        list_tipe = con.GetNamaTipe(jumlah);
-        comboTipe.setModel(new javax.swing.DefaultComboBoxModel(list_tipe));
-        //membuat combo box status ruangan
-        String[] list_status = {"ditempati","kosong"};
-        comboStatus.setModel(new javax.swing.DefaultComboBoxModel(list_status));
+        this.state = state;
+        //Membuat combo box nomor ruangan
+        String[] nomorKamar;
+        int jumlah = con.GetJumlahKamar();
+        nomorKamar = con.nomorKamar(jumlah);
+        comboTipe.setModel(new javax.swing.DefaultComboBoxModel(nomorKamar));
+        
         //set kolom tabel untuk tidak terlihat
         jTable1.setVisible(false);
     }
-    private void table(String tipe, String status){
+    private void table(String nomorKamar){
         DefaultTableModel tb = new DefaultTableModel();
         tb.addColumn("Nomor Kamar");
         tb.addColumn("Nama Fasilitas");
@@ -49,9 +48,10 @@ public class FasilitasRuangan extends javax.swing.JFrame {
              con = new Connectivity();
              result = con.ExecQuery("select "
                      + "             fasilitas_ruangan.kamar_no,fasilitas.fasilitas_nama,fasilitas_ruangan.fr_kuantitas,fasilitas_ruangan.fr_kondisi "
-                     + "             from fasilitas inner join fasilitas_ruangan inner join ruangan inner join type_ruangan on "
+                     + "             from fasilitas inner join fasilitas_ruangan inner join ruangan inner join type_ruangan "
+                     + "             on "
                      + "             fasilitas_ruangan.fasilitas_id = fasilitas.fasilitas_id and fasilitas_ruangan.kamar_no = ruangan.ruangan_no and ruangan.type_id = type_ruangan.type_id"
-                     + "             where type_ruangan.type_nama = '"+ tipe +"' and ruangan.ruangan_status = '"+ status +"'"
+                     + "             where fasilitas_ruangan.kamar_no = ' "+ nomorKamar +"'"
                              + "     order by fasilitas_ruangan.kamar_no");
              while(result.next()){
                     tb.addRow(new Object[]{
@@ -75,7 +75,6 @@ public class FasilitasRuangan extends javax.swing.JFrame {
         jLabel1 = new javax.swing.JLabel();
         buttonKembali = new javax.swing.JButton();
         comboTipe = new javax.swing.JComboBox<>();
-        comboStatus = new javax.swing.JComboBox<>();
         jButton1 = new javax.swing.JButton();
         jScrollPane1 = new javax.swing.JScrollPane();
         jTable1 = new javax.swing.JTable();
@@ -97,8 +96,6 @@ public class FasilitasRuangan extends javax.swing.JFrame {
                 comboTipeActionPerformed(evt);
             }
         });
-
-        comboStatus.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Item 1", "Item 2", "Item 3", "Item 4" }));
 
         jButton1.setText("Cek Fasilitas");
         jButton1.addActionListener(new java.awt.event.ActionListener() {
@@ -132,8 +129,6 @@ public class FasilitasRuangan extends javax.swing.JFrame {
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
                             .addGroup(layout.createSequentialGroup()
                                 .addComponent(comboTipe, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                .addComponent(comboStatus, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                                 .addComponent(jButton1))
                             .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 375, javax.swing.GroupLayout.PREFERRED_SIZE)))
@@ -158,7 +153,6 @@ public class FasilitasRuangan extends javax.swing.JFrame {
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(comboTipe, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(comboStatus, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(jButton1))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                 .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 301, javax.swing.GroupLayout.PREFERRED_SIZE)
@@ -183,14 +177,12 @@ public class FasilitasRuangan extends javax.swing.JFrame {
 
     private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
         //Tombol cek Fasilitas
-        String tipe;
-        String status;
+        String nomorKamar;
         
-        tipe = comboTipe.getSelectedItem().toString();
-        status = comboStatus.getSelectedItem().toString();
+        nomorKamar = comboTipe.getSelectedItem().toString();
         
         jTable1.setVisible(true);
-        table(tipe,status);
+        table(nomorKamar);
     }//GEN-LAST:event_jButton1ActionPerformed
 
     /**
@@ -230,7 +222,6 @@ public class FasilitasRuangan extends javax.swing.JFrame {
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton buttonKembali;
-    private javax.swing.JComboBox<String> comboStatus;
     private javax.swing.JComboBox<String> comboTipe;
     private javax.swing.JButton jButton1;
     private javax.swing.JLabel jLabel1;
