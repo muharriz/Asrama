@@ -21,6 +21,7 @@ public class FasilitasRuangan extends javax.swing.JFrame {
     private int state;
     private String tipe;
     private String Status;
+    
     private ResultSet result;
      
     public FasilitasRuangan(int state) {

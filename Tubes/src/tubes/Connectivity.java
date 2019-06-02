@@ -7,6 +7,7 @@ package tubes;
 
 import java.sql.*;
 import java.util.ArrayList;
+import javax.swing.JOptionPane;
 
 /**
  *
@@ -38,8 +39,8 @@ public class Connectivity {
         return rs;
     }
     
-    public String[] GetNamaTipe(int jumlah){
-        String[] listNama = new String[jumlah];
+    public ArrayList GetNamaTipe(){
+        ArrayList<String> listNama = new ArrayList<String>();
         
         try{
             //menciptakan koneksi dan membuat statement ke database
@@ -47,10 +48,8 @@ public class Connectivity {
              stmt = con.createStatement();
             //menjalankan query dan dimasukkan ke objek rs
              rs = ExecQuery("select * from gettipekamar");
-             int i = 0;
              while(rs.next()){
-                 listNama[i] = rs.getString("type_nama");
-                 i++;
+                 listNama.add(rs.getString("type_nama"));
              }
         }catch(SQLException e){
             System.out.println("Error : " + e.getMessage());
@@ -62,7 +61,7 @@ public class Connectivity {
             return listNama;
         }
     }
-    public int GetJumlahTipe(){
+    /*public int GetJumlahTipe(){
         int jumlah = 0;
         
         try{
@@ -81,7 +80,8 @@ public class Connectivity {
         }finally{ 
            return jumlah;
         }
-    }
+    }*/
+    //Fung
     public int GetJumlahKamar(){
         int jumlah = 0;
         
@@ -153,5 +153,26 @@ public class Connectivity {
            
         }
         return state;
+    }
+    
+    public void InsertRuanganBaru(int nomorkamar,String tipekamar){
+        try{
+            //menciptakan koneksi dan membuat statement ke database
+             con = DriverManager.getConnection("jdbc:mysql://localhost/asrama?"+"user=root&password=");
+             stmt = con.createStatement();
+             rs = ExecQuery("Select type_id from type_ruangan where type_nama like '"+tipekamar+"'");
+             rs.next();
+             int tipekamarid = Integer.parseInt(rs.getString("type_id"));
+            //menjalankan query dan dimasukkan ke objek rs
+             stmt.executeUpdate("Insert into ruangan "+
+                                "values("+nomorkamar+",'"+tipekamarid+"','kosong')");
+             JOptionPane.showMessageDialog(null,"Data Berhasil Masuk!","BERHASIL",JOptionPane.INFORMATION_MESSAGE);
+             
+        }catch(SQLException e){
+            JOptionPane.showMessageDialog(null,"Data Gagal Masuk!","ERROR",JOptionPane.ERROR_MESSAGE);
+        }finally{ 
+           
+        }
+    
     }
 }
