@@ -3,8 +3,8 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: 27 Mei 2019 pada 16.19
--- Versi Server: 10.1.26-MariaDB
+-- Generation Time: Jun 03, 2019 at 05:22 AM
+-- Server version: 10.1.26-MariaDB
 -- PHP Version: 7.1.9
 
 SET SQL_MODE = "NO_AUTO_VALUE_ON_ZERO";
@@ -25,57 +25,79 @@ SET time_zone = "+00:00";
 -- --------------------------------------------------------
 
 --
--- Struktur dari tabel `fasilitas`
+-- Table structure for table `fasilitas`
 --
 
 CREATE TABLE `fasilitas` (
   `fasilitas_id` int(8) NOT NULL,
   `fasilitas_nama` varchar(25) NOT NULL,
-  `fasilitas_harga` int(8) NOT NULL
+  `fasilitas_harga` int(8) NOT NULL,
+  `fasilitas_kuantitas` int(8) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
 --
--- Dumping data untuk tabel `fasilitas`
+-- Dumping data for table `fasilitas`
 --
 
-INSERT INTO `fasilitas` (`fasilitas_id`, `fasilitas_nama`, `fasilitas_harga`) VALUES
-(20001, 'Televisi', 1200000),
-(20002, 'Spring Bed Deluxe Size', 1300000),
-(20004, 'Lemari 2 Pintu', 700000),
-(20005, 'Spring Bed 2 in 1', 1500000);
+INSERT INTO `fasilitas` (`fasilitas_id`, `fasilitas_nama`, `fasilitas_harga`, `fasilitas_kuantitas`) VALUES
+(20001, 'LED 21 Inch Samsung', 1200000, 1),
+(20002, 'SpringBed Airland King Sz', 1300000, 1),
+(20004, 'Lemari 2 Pintu', 700000, 8),
+(20005, 'SpringBed Caisar 2 in 1', 1500000, 8);
 
 -- --------------------------------------------------------
 
 --
--- Struktur dari tabel `fasilitas_ruangan`
+-- Table structure for table `fasilitas_ruangan`
 --
 
 CREATE TABLE `fasilitas_ruangan` (
   `kamar_no` int(8) NOT NULL,
   `fasilitas_id` int(8) NOT NULL,
   `fr_kuantitas` int(3) NOT NULL,
-  `fr_kondisi` enum('rusak','bagus') NOT NULL
+  `fr_kondisi` enum('rusak','bagus') NOT NULL,
+  `fasilitas_ruangan_id` int(11) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
 --
--- Dumping data untuk tabel `fasilitas_ruangan`
+-- Dumping data for table `fasilitas_ruangan`
 --
 
-INSERT INTO `fasilitas_ruangan` (`kamar_no`, `fasilitas_id`, `fr_kuantitas`, `fr_kondisi`) VALUES
-(101, 20005, 2, 'bagus'),
-(101, 20004, 2, 'bagus'),
-(104, 20004, 2, 'bagus'),
-(104, 20005, 2, 'bagus'),
-(106, 20004, 2, 'bagus'),
-(106, 20005, 2, 'bagus'),
-(102, 20004, 2, 'bagus'),
-(102, 20005, 2, 'bagus');
+INSERT INTO `fasilitas_ruangan` (`kamar_no`, `fasilitas_id`, `fr_kuantitas`, `fr_kondisi`, `fasilitas_ruangan_id`) VALUES
+(101, 20005, 2, 'bagus', 1230001),
+(101, 20004, 2, 'bagus', 1230002),
+(104, 20004, 2, 'bagus', 1230003),
+(104, 20005, 2, 'bagus', 1230004),
+(106, 20004, 2, 'bagus', 1230005),
+(106, 20005, 2, 'bagus', 1230006),
+(102, 20004, 2, 'bagus', 1230007),
+(102, 20005, 2, 'bagus', 1230008);
+
+-- --------------------------------------------------------
+
+--
+-- Stand-in structure for view `getjumahkamar`
+-- (See below for the actual view)
+--
+CREATE TABLE `getjumahkamar` (
+`ruangan_no` bigint(21)
+);
+
+-- --------------------------------------------------------
+
+--
+-- Stand-in structure for view `getjumlahkamar`
+-- (See below for the actual view)
+--
+CREATE TABLE `getjumlahkamar` (
+`ruangan_no` bigint(21)
+);
 
 -- --------------------------------------------------------
 
 --
 -- Stand-in structure for view `gettipekamar`
--- (Lihat di bawah untuk tampilan aktual)
+-- (See below for the actual view)
 --
 CREATE TABLE `gettipekamar` (
 `type_nama` varchar(20)
@@ -85,7 +107,7 @@ CREATE TABLE `gettipekamar` (
 
 --
 -- Stand-in structure for view `lihatruangankosong`
--- (Lihat di bawah untuk tampilan aktual)
+-- (See below for the actual view)
 --
 CREATE TABLE `lihatruangankosong` (
 `ruangan_no` int(8)
@@ -97,7 +119,23 @@ CREATE TABLE `lihatruangankosong` (
 -- --------------------------------------------------------
 
 --
--- Struktur dari tabel `ruangan`
+-- Table structure for table `penghuni`
+--
+
+CREATE TABLE `penghuni` (
+  `penghuni_id` int(8) NOT NULL,
+  `penghuni_nama_depan` varchar(25) NOT NULL,
+  `penghuni_nama_belakang` varchar(25) NOT NULL,
+  `penghuni_tgl_lahir` date NOT NULL,
+  `penghuni_nomor_kamar` int(8) NOT NULL,
+  `penghuni_NIK` bigint(20) UNSIGNED NOT NULL,
+  `penghuni_status` enum('tinggal','keluar') NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `ruangan`
 --
 
 CREATE TABLE `ruangan` (
@@ -107,7 +145,7 @@ CREATE TABLE `ruangan` (
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
 --
--- Dumping data untuk tabel `ruangan`
+-- Dumping data for table `ruangan`
 --
 
 INSERT INTO `ruangan` (`ruangan_no`, `type_id`, `ruangan_status`) VALUES
@@ -116,12 +154,13 @@ INSERT INTO `ruangan` (`ruangan_no`, `type_id`, `ruangan_status`) VALUES
 (104, 1101, 'ditempati'),
 (105, 1102, 'kosong'),
 (106, 1102, 'ditempati'),
-(107, 1104, 'kosong');
+(107, 1104, 'kosong'),
+(108, 1101, 'kosong');
 
 -- --------------------------------------------------------
 
 --
--- Struktur dari tabel `type_ruangan`
+-- Table structure for table `type_ruangan`
 --
 
 CREATE TABLE `type_ruangan` (
@@ -132,7 +171,7 @@ CREATE TABLE `type_ruangan` (
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
 --
--- Dumping data untuk tabel `type_ruangan`
+-- Dumping data for table `type_ruangan`
 --
 
 INSERT INTO `type_ruangan` (`type_id`, `type_nama`, `type_kapasitas`, `type_sewa`) VALUES
@@ -143,7 +182,7 @@ INSERT INTO `type_ruangan` (`type_id`, `type_nama`, `type_kapasitas`, `type_sewa
 -- --------------------------------------------------------
 
 --
--- Struktur dari tabel `user`
+-- Table structure for table `user`
 --
 
 CREATE TABLE `user` (
@@ -154,7 +193,7 @@ CREATE TABLE `user` (
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
 --
--- Dumping data untuk tabel `user`
+-- Dumping data for table `user`
 --
 
 INSERT INTO `user` (`user_id`, `user_username`, `user_password`, `user_level`) VALUES
@@ -164,7 +203,25 @@ INSERT INTO `user` (`user_id`, `user_username`, `user_password`, `user_level`) V
 -- --------------------------------------------------------
 
 --
--- Struktur untuk view `gettipekamar`
+-- Structure for view `getjumahkamar`
+--
+DROP TABLE IF EXISTS `getjumahkamar`;
+
+CREATE ALGORITHM=UNDEFINED DEFINER=`root`@`localhost` SQL SECURITY DEFINER VIEW `getjumahkamar`  AS  select count(`ruangan`.`ruangan_no`) AS `ruangan_no` from `ruangan` ;
+
+-- --------------------------------------------------------
+
+--
+-- Structure for view `getjumlahkamar`
+--
+DROP TABLE IF EXISTS `getjumlahkamar`;
+
+CREATE ALGORITHM=UNDEFINED DEFINER=`root`@`localhost` SQL SECURITY DEFINER VIEW `getjumlahkamar`  AS  select count(`ruangan`.`ruangan_no`) AS `ruangan_no` from `ruangan` ;
+
+-- --------------------------------------------------------
+
+--
+-- Structure for view `gettipekamar`
 --
 DROP TABLE IF EXISTS `gettipekamar`;
 
@@ -173,7 +230,7 @@ CREATE ALGORITHM=UNDEFINED DEFINER=`root`@`localhost` SQL SECURITY DEFINER VIEW 
 -- --------------------------------------------------------
 
 --
--- Struktur untuk view `lihatruangankosong`
+-- Structure for view `lihatruangankosong`
 --
 DROP TABLE IF EXISTS `lihatruangankosong`;
 
@@ -193,8 +250,16 @@ ALTER TABLE `fasilitas`
 -- Indexes for table `fasilitas_ruangan`
 --
 ALTER TABLE `fasilitas_ruangan`
+  ADD PRIMARY KEY (`fasilitas_ruangan_id`),
   ADD KEY `kamar_no` (`kamar_no`,`fasilitas_id`),
   ADD KEY `constraint1` (`fasilitas_id`);
+
+--
+-- Indexes for table `penghuni`
+--
+ALTER TABLE `penghuni`
+  ADD PRIMARY KEY (`penghuni_id`),
+  ADD KEY `constraint_penghuni_2` (`penghuni_nomor_kamar`);
 
 --
 -- Indexes for table `ruangan`
@@ -226,10 +291,10 @@ ALTER TABLE `fasilitas`
   MODIFY `fasilitas_id` int(8) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=20006;
 
 --
--- AUTO_INCREMENT for table `ruangan`
+-- AUTO_INCREMENT for table `fasilitas_ruangan`
 --
-ALTER TABLE `ruangan`
-  MODIFY `ruangan_no` int(8) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=108;
+ALTER TABLE `fasilitas_ruangan`
+  MODIFY `fasilitas_ruangan_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=1230009;
 
 --
 -- AUTO_INCREMENT for table `type_ruangan`
@@ -244,11 +309,25 @@ ALTER TABLE `user`
   MODIFY `user_id` int(8) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=20103;
 
 --
--- Ketidakleluasaan untuk tabel pelimpahan (Dumped Tables)
+-- Constraints for dumped tables
 --
 
 --
--- Ketidakleluasaan untuk tabel `ruangan`
+-- Constraints for table `fasilitas_ruangan`
+--
+ALTER TABLE `fasilitas_ruangan`
+  ADD CONSTRAINT `constraint_fasilitas_ruangan_1` FOREIGN KEY (`fasilitas_id`) REFERENCES `fasilitas` (`fasilitas_id`) ON UPDATE CASCADE,
+  ADD CONSTRAINT `constraint_fasilitas_ruangan_2` FOREIGN KEY (`kamar_no`) REFERENCES `ruangan` (`ruangan_no`) ON UPDATE CASCADE;
+
+--
+-- Constraints for table `penghuni`
+--
+ALTER TABLE `penghuni`
+  ADD CONSTRAINT `constraint_penghuni_1` FOREIGN KEY (`penghuni_id`) REFERENCES `user` (`user_id`) ON UPDATE CASCADE,
+  ADD CONSTRAINT `constraint_penghuni_2` FOREIGN KEY (`penghuni_nomor_kamar`) REFERENCES `ruangan` (`ruangan_no`) ON UPDATE CASCADE;
+
+--
+-- Constraints for table `ruangan`
 --
 ALTER TABLE `ruangan`
   ADD CONSTRAINT `constraint_1` FOREIGN KEY (`type_id`) REFERENCES `type_ruangan` (`type_id`) ON UPDATE CASCADE;
