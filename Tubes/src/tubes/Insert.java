@@ -140,7 +140,7 @@ public class Insert extends javax.swing.JFrame {
         int nomorkamar = Integer.parseInt(jTextField1.getText());
         String tipekamar = jComboBox1.getSelectedItem().toString();
         
-        con.InsertRuanganBaru(nomorkamar,tipekamar);
+        con.TambahRuanganBaru(nomorkamar,tipekamar);
        
     }//GEN-LAST:event_jButton1ActionPerformed
 
@@ -150,8 +150,8 @@ public class Insert extends javax.swing.JFrame {
 
     private void jButton2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton2ActionPerformed
         // Tombol Kembali
-        this.dispose();
         new LihatSemuaRuangan(state).setVisible(true);
+        this.dispose();
     }//GEN-LAST:event_jButton2ActionPerformed
 
     /**

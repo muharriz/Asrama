@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: Jun 03, 2019 at 05:22 AM
+-- Generation Time: Jun 04, 2019 at 06:59 AM
 -- Server version: 10.1.26-MariaDB
 -- PHP Version: 7.1.9
 
@@ -30,20 +30,19 @@ SET time_zone = "+00:00";
 
 CREATE TABLE `fasilitas` (
   `fasilitas_id` int(8) NOT NULL,
-  `fasilitas_nama` varchar(25) NOT NULL,
-  `fasilitas_harga` int(8) NOT NULL,
-  `fasilitas_kuantitas` int(8) NOT NULL
+  `fasilitas_nama` varchar(40) NOT NULL,
+  `fasilitas_harga` int(20) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
 --
 -- Dumping data for table `fasilitas`
 --
 
-INSERT INTO `fasilitas` (`fasilitas_id`, `fasilitas_nama`, `fasilitas_harga`, `fasilitas_kuantitas`) VALUES
-(20001, 'LED 21 Inch Samsung', 1200000, 1),
-(20002, 'SpringBed Airland King Sz', 1300000, 1),
-(20004, 'Lemari 2 Pintu', 700000, 8),
-(20005, 'SpringBed Caisar 2 in 1', 1500000, 8);
+INSERT INTO `fasilitas` (`fasilitas_id`, `fasilitas_nama`, `fasilitas_harga`) VALUES
+(20001, 'LED 21 Inch Samsung', 1200000),
+(20002, 'SpringBed Airland King Sz', 1300000),
+(20004, 'Lemari Olympic 2 Pintu', 700000),
+(20005, 'SpringBed Caisar 2 in 1', 1500000);
 
 -- --------------------------------------------------------
 
@@ -71,7 +70,10 @@ INSERT INTO `fasilitas_ruangan` (`kamar_no`, `fasilitas_id`, `fr_kuantitas`, `fr
 (106, 20004, 2, 'bagus', 1230005),
 (106, 20005, 2, 'bagus', 1230006),
 (102, 20004, 2, 'bagus', 1230007),
-(102, 20005, 2, 'bagus', 1230008);
+(102, 20005, 2, 'bagus', 1230008),
+(108, 20005, 2, 'bagus', 1230009),
+(107, 20002, 1, 'bagus', 1230010),
+(105, 20005, 1, 'bagus', 1230011);
 
 -- --------------------------------------------------------
 
@@ -119,6 +121,33 @@ CREATE TABLE `lihatruangankosong` (
 -- --------------------------------------------------------
 
 --
+-- Stand-in structure for view `lihatsemuafasilitas`
+-- (See below for the actual view)
+--
+CREATE TABLE `lihatsemuafasilitas` (
+`fasilitas_id` int(8)
+,`fasilitas_nama` varchar(40)
+,`fasilitas_harga` int(20)
+,`kuantitas` bigint(21)
+);
+
+-- --------------------------------------------------------
+
+--
+-- Stand-in structure for view `lihatsemuaruangan`
+-- (See below for the actual view)
+--
+CREATE TABLE `lihatsemuaruangan` (
+`ruangan_no` int(8)
+,`type_nama` varchar(20)
+,`type_kapasitas` int(1)
+,`type_sewa` int(10)
+,`ruangan_status` enum('kosong','ditempati')
+);
+
+-- --------------------------------------------------------
+
+--
 -- Table structure for table `penghuni`
 --
 
@@ -155,7 +184,8 @@ INSERT INTO `ruangan` (`ruangan_no`, `type_id`, `ruangan_status`) VALUES
 (105, 1102, 'kosong'),
 (106, 1102, 'ditempati'),
 (107, 1104, 'kosong'),
-(108, 1101, 'kosong');
+(108, 1101, 'kosong'),
+(109, 1102, 'kosong');
 
 -- --------------------------------------------------------
 
@@ -236,6 +266,24 @@ DROP TABLE IF EXISTS `lihatruangankosong`;
 
 CREATE ALGORITHM=UNDEFINED DEFINER=`root`@`localhost` SQL SECURITY DEFINER VIEW `lihatruangankosong`  AS  select `ruangan`.`ruangan_no` AS `ruangan_no`,`type_ruangan`.`type_nama` AS `type_nama`,`type_ruangan`.`type_kapasitas` AS `type_kapasitas`,`type_ruangan`.`type_sewa` AS `type_sewa` from (`ruangan` join `type_ruangan` on((`ruangan`.`type_id` = `type_ruangan`.`type_id`))) where (`ruangan`.`ruangan_status` = 'kosong') ;
 
+-- --------------------------------------------------------
+
+--
+-- Structure for view `lihatsemuafasilitas`
+--
+DROP TABLE IF EXISTS `lihatsemuafasilitas`;
+
+CREATE ALGORITHM=UNDEFINED DEFINER=`root`@`localhost` SQL SECURITY DEFINER VIEW `lihatsemuafasilitas`  AS  select `fasilitas`.`fasilitas_id` AS `fasilitas_id`,`fasilitas`.`fasilitas_nama` AS `fasilitas_nama`,`fasilitas`.`fasilitas_harga` AS `fasilitas_harga`,count(`fasilitas_ruangan`.`fasilitas_id`) AS `kuantitas` from (`fasilitas` left join `fasilitas_ruangan` on((`fasilitas`.`fasilitas_id` = `fasilitas_ruangan`.`fasilitas_id`))) group by `fasilitas`.`fasilitas_id` ;
+
+-- --------------------------------------------------------
+
+--
+-- Structure for view `lihatsemuaruangan`
+--
+DROP TABLE IF EXISTS `lihatsemuaruangan`;
+
+CREATE ALGORITHM=UNDEFINED DEFINER=`root`@`localhost` SQL SECURITY DEFINER VIEW `lihatsemuaruangan`  AS  select `ruangan`.`ruangan_no` AS `ruangan_no`,`type_ruangan`.`type_nama` AS `type_nama`,`type_ruangan`.`type_kapasitas` AS `type_kapasitas`,`type_ruangan`.`type_sewa` AS `type_sewa`,`ruangan`.`ruangan_status` AS `ruangan_status` from (`ruangan` join `type_ruangan` on((`ruangan`.`type_id` = `type_ruangan`.`type_id`))) order by `ruangan`.`ruangan_no` ;
+
 --
 -- Indexes for dumped tables
 --
@@ -288,13 +336,13 @@ ALTER TABLE `user`
 -- AUTO_INCREMENT for table `fasilitas`
 --
 ALTER TABLE `fasilitas`
-  MODIFY `fasilitas_id` int(8) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=20006;
+  MODIFY `fasilitas_id` int(8) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=20008;
 
 --
 -- AUTO_INCREMENT for table `fasilitas_ruangan`
 --
 ALTER TABLE `fasilitas_ruangan`
-  MODIFY `fasilitas_ruangan_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=1230009;
+  MODIFY `fasilitas_ruangan_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=1230012;
 
 --
 -- AUTO_INCREMENT for table `type_ruangan`

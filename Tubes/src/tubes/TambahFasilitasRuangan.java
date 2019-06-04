@@ -5,17 +5,33 @@
  */
 package tubes;
 
+import java.util.ArrayList;
+
 /**
  *
  * @author Muharriz
  */
 public class TambahFasilitasRuangan extends javax.swing.JFrame {
-
+    private int state;
+    private Connectivity con;
     /**
      * Creates new form TambahFasilitasRuangan
      */
-    public TambahFasilitasRuangan() {
+    public TambahFasilitasRuangan(int state) {
         initComponents();
+        this.state = state;
+        con = new Connectivity();
+        
+        init();
+    }
+    public void init(){
+        ArrayList<String> nomorkamar = new ArrayList<String>();
+        ArrayList<String> namafasilitas = new ArrayList<String>();
+        nomorkamar = con.nomorKamar();
+        namafasilitas = con.namaFasilitas();
+        
+        jComboBox2.setModel(new javax.swing.DefaultComboBoxModel(nomorkamar.toArray()));
+        jComboBox1.setModel(new javax.swing.DefaultComboBoxModel(namafasilitas.toArray()));
     }
 
     /**
@@ -53,8 +69,18 @@ public class TambahFasilitasRuangan extends javax.swing.JFrame {
         jComboBox2.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Item 1", "Item 2", "Item 3", "Item 4" }));
 
         jButton1.setText("Submit");
+        jButton1.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton1ActionPerformed(evt);
+            }
+        });
 
         jButton2.setText("Kembali");
+        jButton2.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton2ActionPerformed(evt);
+            }
+        });
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
@@ -114,6 +140,21 @@ public class TambahFasilitasRuangan extends javax.swing.JFrame {
         pack();
     }// </editor-fold>//GEN-END:initComponents
 
+    private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
+        // Tombol Submit
+        int nomorkamar = Integer.parseInt(jComboBox2.getSelectedItem().toString());
+        String namafasilitas = jComboBox1.getSelectedItem().toString();
+        int kuantitas = Integer.parseInt(jSpinner1.getValue().toString());
+        
+        con.TambahFasilitasRuangan(nomorkamar,namafasilitas,kuantitas);
+    }//GEN-LAST:event_jButton1ActionPerformed
+
+    private void jButton2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton2ActionPerformed
+        // Tombol Kembali
+        new FasilitasRuangan(state).setVisible(true);
+        this.dispose();
+    }//GEN-LAST:event_jButton2ActionPerformed
+
     /**
      * @param args the command line arguments
      */
@@ -144,7 +185,7 @@ public class TambahFasilitasRuangan extends javax.swing.JFrame {
         /* Create and display the form */
         java.awt.EventQueue.invokeLater(new Runnable() {
             public void run() {
-                new TambahFasilitasRuangan().setVisible(true);
+                new TambahFasilitasRuangan(0).setVisible(true);
             }
         });
     }
