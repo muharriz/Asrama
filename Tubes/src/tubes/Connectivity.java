@@ -17,7 +17,6 @@ public class Connectivity {
     public static Connection con;
     public static Statement stmt;
     public static ResultSet rs;
-    public static ResultSetMetaData rsm;
     
     public Connectivity(){
         con = null;
@@ -257,6 +256,186 @@ public class Connectivity {
              stmt = con.createStatement();
             //mengeksekusi query
              stmt.executeUpdate("update fasilitas set fasilitas_nama = '"+namafasilitas+"',fasilitas_harga = '"+hargafasilitas+"' where fasilitas_id = '"+id+"'");
+             JOptionPane.showMessageDialog(null,"Data Berhasil Diupdate!","BERHASIL",JOptionPane.INFORMATION_MESSAGE);
+        }catch(SQLException e){
+            System.out.println("Error : " + e.getMessage());
+            System.out.println("SQL State : "+e.getSQLState());
+            System.out.println("Error Code : "+e.getErrorCode());
+        }finally{ 
+           
+        }
+    }
+    public ResultSet ambilDataRuangan(int id){
+        try{
+            //menciptakan koneksi dan membuat statement ke database
+             con = DriverManager.getConnection("jdbc:mysql://localhost/asrama?"+"user=root&password=");
+             stmt = con.createStatement();
+            //mengeksekusi query
+             rs = ExecQuery("select ruangan.ruangan_no,type_ruangan.type_nama,ruangan.ruangan_status "
+                     + "     from ruangan inner join type_ruangan "
+                     + "     on ruangan.type_id = type_ruangan.type_id "
+                     + "     where ruangan.ruangan_no = '"+id+"';");
+             
+        }catch(SQLException e){
+            System.out.println("Error : " + e.getMessage());
+            System.out.println("SQL State : "+e.getSQLState());
+            System.out.println("Error Code : "+e.getErrorCode());
+        }finally{ 
+           return rs;
+        }
+    }
+    public void updateDataRuangan(int id,int nomorkamar,String tipekamar,String statuskamar){
+        try{
+            //menciptakan koneksi dan membuat statement ke database
+             con = DriverManager.getConnection("jdbc:mysql://localhost/asrama?"+"user=root&password=");
+             stmt = con.createStatement();
+            //mengeksekusi query
+             rs = ExecQuery("select type_id from type_ruangan where type_nama = '"+tipekamar+"'");
+             rs.next();
+             int tipeid = Integer.parseInt(rs.getString("type_id"));
+             stmt.executeUpdate("update ruangan "
+                             + " set ruangan_no = '"+nomorkamar+"',type_id = '"+tipeid+"',ruangan_status = '"+statuskamar+"' "
+                             + " where  ruangan_no = '"+id+"'");
+             JOptionPane.showMessageDialog(null,"Data Berhasil Diupdate!","BERHASIL",JOptionPane.INFORMATION_MESSAGE);
+        }catch(SQLException e){
+            System.out.println("Error : " + e.getMessage());
+            System.out.println("SQL State : "+e.getSQLState());
+            System.out.println("Error Code : "+e.getErrorCode());
+        }finally{ 
+           
+        }
+    }
+    public ArrayList ambilKodeFasilitasRuangan(String nomorruangan){
+        ArrayList<String> hasil = new ArrayList<String>();
+        try{
+            //menciptakan koneksi dan membuat statement ke database
+             con = DriverManager.getConnection("jdbc:mysql://localhost/asrama?"+"user=root&password=");
+             stmt = con.createStatement();
+            //mengeksekusi query
+             rs = ExecQuery("select fasilitas_ruangan_id from fasilitas_ruangan where kamar_no = '"+nomorruangan+"'");
+             while(rs.next()){
+                 hasil.add(rs.getString("fasilitas_ruangan_id"));
+             }
+        }catch(SQLException e){
+            System.out.println("Error : " + e.getMessage());
+            System.out.println("SQL State : "+e.getSQLState());
+            System.out.println("Error Code : "+e.getErrorCode());
+        }finally{ 
+           return hasil;
+        }
+    }
+    
+    public ResultSet ambilDataFasilitasRuangan(int id){
+         try{
+            //menciptakan koneksi dan membuat statement ke database
+             con = DriverManager.getConnection("jdbc:mysql://localhost/asrama?"+"user=root&password=");
+             stmt = con.createStatement();
+            //mengeksekusi query
+             rs = ExecQuery("select fasilitas_ruangan.kamar_no,fasilitas.fasilitas_nama,fasilitas_ruangan.fr_kuantitas,fasilitas_ruangan.fr_kondisi,fasilitas_ruangan.fasilitas_ruangan_id "
+                     + "     from fasilitas_ruangan inner join fasilitas "
+                     + "     on fasilitas_ruangan.fasilitas_id = fasilitas.fasilitas_id "
+                     + "     where fasilitas_ruangan.fasilitas_ruangan_id = '"+id+"';");
+             
+        }catch(SQLException e){
+            System.out.println("Error : " + e.getMessage());
+            System.out.println("SQL State : "+e.getSQLState());
+            System.out.println("Error Code : "+e.getErrorCode());
+        }finally{ 
+           return rs;
+        }
+    }
+    
+    public void updateDataFasilitasRuangan(int id,String nomorkamar,String namafasilitas,String kuantitas,String kondisi){
+        try{
+            //menciptakan koneksi dan membuat statement ke database
+             con = DriverManager.getConnection("jdbc:mysql://localhost/asrama?"+"user=root&password=");
+             stmt = con.createStatement();
+            //mengeksekusi query
+             rs = ExecQuery("select fasilitas_id from fasilitas where fasilitas_nama = '"+ namafasilitas +"'");
+             rs.next();
+             int fasilitasid = Integer.parseInt(rs.getString("fasilitas_id"));
+             stmt.executeUpdate("update fasilitas_ruangan "
+                             + " set kamar_no = '"+ nomorkamar +"',fasilitas_id = '"+ fasilitasid +"',fr_kuantitas = '"+ kuantitas +"',fr_kondisi = '"+ kondisi +"' "
+                             + " where fasilitas_ruangan_id = '"+ id +"'");
+             JOptionPane.showMessageDialog(null,"Data Berhasil Diupdate!","BERHASIL",JOptionPane.INFORMATION_MESSAGE);
+        }catch(SQLException e){
+            System.out.println("Error : " + e.getMessage());
+            System.out.println("SQL State : "+e.getSQLState());
+            System.out.println("Error Code : "+e.getErrorCode());
+        }finally{ 
+           
+        }
+    }
+    public void tambahDataPenghuni(String namadepan,String namabelakang,String NIK,String tgllahir,String nomorkamar,String username,String password){
+    try{
+            //menciptakan koneksi dan membuat statement ke database
+             con = DriverManager.getConnection("jdbc:mysql://localhost/asrama?"+"user=root&password=");
+             stmt = con.createStatement();
+            //mengeksekusi query
+             stmt.executeUpdate("insert into "
+                     + "         user(user_username,user_password,user_level)"
+                     + "         values('"+ username +"','"+ password +"','penghuni')");
+             rs = ExecQuery("select user_id from user where user_username = '"+ username +"' and user_password = '"+ password +"'");
+             rs.next();
+             int id = Integer.parseInt(rs.getString("user_id"));
+             stmt.executeUpdate("insert into penghuni"
+                     + "         values('"+ id +"','"+ namadepan +"','"+ namabelakang +"',STR_TO_DATE('"+ tgllahir +"','%d-%m-%Y'),'"+ nomorkamar +"','"+ NIK +"','tinggal')");
+             JOptionPane.showMessageDialog(null,"Data Berhasil Masuk!","BERHASIL",JOptionPane.INFORMATION_MESSAGE);
+             
+        }catch(SQLException e){
+            System.out.println("Error : " + e.getMessage());
+            System.out.println("SQL State : "+e.getSQLState());
+            System.out.println("Error Code : "+e.getErrorCode());
+        }finally{ 
+           
+        }
+    }
+    public ArrayList ambilIdPenghuni(){
+        ArrayList<String> listId = new ArrayList<String>();
+        try{
+            //menciptakan koneksi dan membuat statement ke database
+             con = DriverManager.getConnection("jdbc:mysql://localhost/asrama?"+"user=root&password=");
+             stmt = con.createStatement();
+            //mengeksekusi query
+             rs = ExecQuery("select penghuni_id from penghuni");
+             while(rs.next()){
+              listId.add(rs.getString("penghuni_id"));
+             }
+        }catch(SQLException e){
+            System.out.println("Error : " + e.getMessage());
+            System.out.println("SQL State : "+e.getSQLState());
+            System.out.println("Error Code : "+e.getErrorCode());
+        }finally{ 
+           return listId;
+        }
+    }
+    public ResultSet ambilDataPenghuni(int id){
+        try{
+            //menciptakan koneksi dan membuat statement ke database
+             con = DriverManager.getConnection("jdbc:mysql://localhost/asrama?"+"user=root&password=");
+             stmt = con.createStatement();
+            //mengeksekusi query
+             rs = ExecQuery("select * from"
+                     + "     penghuni "
+                     + "     where penghuni_id = '"+id+"';");
+             
+        }catch(SQLException e){
+            System.out.println("Error : " + e.getMessage());
+            System.out.println("SQL State : "+e.getSQLState());
+            System.out.println("Error Code : "+e.getErrorCode());
+        }finally{ 
+           return rs;
+        }
+    }
+    public void updatePenghuni(int id,String namadepan,String namabelakang,String nik,String tgllahir,String status,String ruanganno){
+        try{
+            //menciptakan koneksi dan membuat statement ke database
+             con = DriverManager.getConnection("jdbc:mysql://localhost/asrama?"+"user=root&password=");
+             stmt = con.createStatement();
+            //mengeksekusi query
+             stmt.executeUpdate("update penghuni "
+                             + " set penghuni_nama_depan = '"+ namadepan +"',penghuni_nama_belakang = '"+ namabelakang +"',penghuni_NIK = '"+ nik +"',penghuni_tgl_lahir = STR_TO_DATE('"+ tgllahir +"','%Y-%m-%d'),ruangan_no = '"+ ruanganno +"',penghuni_status = '"+ status +"' "
+                             + " where penghuni_id = '"+ id +"'");
              JOptionPane.showMessageDialog(null,"Data Berhasil Diupdate!","BERHASIL",JOptionPane.INFORMATION_MESSAGE);
         }catch(SQLException e){
             System.out.println("Error : " + e.getMessage());

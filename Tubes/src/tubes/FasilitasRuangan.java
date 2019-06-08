@@ -10,6 +10,7 @@ import java.awt.event.ActionListener;
 import java.sql.ResultSet;
 import javax.swing.JComboBox;
 import java.util.ArrayList;
+import javax.swing.JOptionPane;
 import javax.swing.table.DefaultTableModel;
 
 /**
@@ -22,6 +23,7 @@ public class FasilitasRuangan extends javax.swing.JFrame {
     private int state;
     private String tipe;
     private String Status;
+    private String nomorKamar;
     
     private ResultSet result;
      
@@ -33,8 +35,9 @@ public class FasilitasRuangan extends javax.swing.JFrame {
         //Membuat combo box nomor ruangan
         ArrayList<String> nomorKamar;
         nomorKamar = con.nomorKamar();
+        String[] kodefasilitas = {"Kode Fasilitas"};
         comboTipe.setModel(new javax.swing.DefaultComboBoxModel(nomorKamar.toArray()));
-        
+        jComboBox1.setModel(new javax.swing.DefaultComboBoxModel(kodefasilitas));
         //set kolom tabel untuk tidak terlihat
         jTable1.setVisible(false);
     }
@@ -68,6 +71,12 @@ public class FasilitasRuangan extends javax.swing.JFrame {
              
                 
         }
+    }
+    
+    public void loadcomboboxfasilitaskode(){
+    ArrayList<String> kodefasilitasruangan = new ArrayList<String>();
+    kodefasilitasruangan = con.ambilKodeFasilitasRuangan(nomorKamar);
+    jComboBox1.setModel(new javax.swing.DefaultComboBoxModel(kodefasilitasruangan.toArray()));
     }
 
     @SuppressWarnings("unchecked")
@@ -134,8 +143,18 @@ public class FasilitasRuangan extends javax.swing.JFrame {
         jComboBox1.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Item 1", "Item 2", "Item 3", "Item 4" }));
 
         jButton2.setText("Edit");
+        jButton2.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton2ActionPerformed(evt);
+            }
+        });
 
         jButton4.setText("Delete");
+        jButton4.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton4ActionPerformed(evt);
+            }
+        });
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
@@ -214,10 +233,12 @@ public class FasilitasRuangan extends javax.swing.JFrame {
     private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
         //Tombol cek Fasilitas
         String nomorKamar;
-        
+
         nomorKamar = comboTipe.getSelectedItem().toString();
+        this.nomorKamar = nomorKamar;
         
         jTable1.setVisible(true);
+        loadcomboboxfasilitaskode();
         table(nomorKamar);
     }//GEN-LAST:event_jButton1ActionPerformed
 
@@ -226,6 +247,27 @@ public class FasilitasRuangan extends javax.swing.JFrame {
         new TambahFasilitasRuangan(state).setVisible(true);
         this.dispose();
     }//GEN-LAST:event_jButton3ActionPerformed
+
+    private void jButton4ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton4ActionPerformed
+        // Tombol Hapus
+        int pilihan = JOptionPane.showConfirmDialog(this, "Apakah anda yakin ingin hapus?", "Hapus", JOptionPane.YES_NO_OPTION);
+        if(pilihan == 0){
+            int kodefasilitasruangan = Integer.parseInt(jComboBox1.getSelectedItem().toString());
+            con.hapusRecord(kodefasilitasruangan,"fasilitas_ruangan_id", "fasilitas_ruangan");
+            
+            table(nomorKamar);
+            loadcomboboxfasilitaskode();
+            
+        }
+        
+    }//GEN-LAST:event_jButton4ActionPerformed
+
+    private void jButton2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton2ActionPerformed
+        // Tombol Edit
+        int id = Integer.parseInt(jComboBox1.getSelectedItem().toString());
+        new editFasilitasRuangan(state,id).setVisible(true);
+        this.dispose();
+    }//GEN-LAST:event_jButton2ActionPerformed
 
     /**
      * @param args the command line arguments

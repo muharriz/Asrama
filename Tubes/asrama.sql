@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: Jun 04, 2019 at 06:59 AM
+-- Generation Time: Jun 08, 2019 at 05:30 PM
 -- Server version: 10.1.26-MariaDB
 -- PHP Version: 7.1.9
 
@@ -63,17 +63,15 @@ CREATE TABLE `fasilitas_ruangan` (
 --
 
 INSERT INTO `fasilitas_ruangan` (`kamar_no`, `fasilitas_id`, `fr_kuantitas`, `fr_kondisi`, `fasilitas_ruangan_id`) VALUES
-(101, 20005, 2, 'bagus', 1230001),
-(101, 20004, 2, 'bagus', 1230002),
 (104, 20004, 2, 'bagus', 1230003),
 (104, 20005, 2, 'bagus', 1230004),
 (106, 20004, 2, 'bagus', 1230005),
 (106, 20005, 2, 'bagus', 1230006),
 (102, 20004, 2, 'bagus', 1230007),
-(102, 20005, 2, 'bagus', 1230008),
-(108, 20005, 2, 'bagus', 1230009),
-(107, 20002, 1, 'bagus', 1230010),
-(105, 20005, 1, 'bagus', 1230011);
+(102, 20005, 2, 'rusak', 1230008),
+(105, 20005, 1, 'bagus', 1230011),
+(101, 20005, 2, 'bagus', 1230012),
+(101, 20004, 2, 'bagus', 1230013);
 
 -- --------------------------------------------------------
 
@@ -156,10 +154,17 @@ CREATE TABLE `penghuni` (
   `penghuni_nama_depan` varchar(25) NOT NULL,
   `penghuni_nama_belakang` varchar(25) NOT NULL,
   `penghuni_tgl_lahir` date NOT NULL,
-  `penghuni_nomor_kamar` int(8) NOT NULL,
+  `ruangan_no` int(8) NOT NULL,
   `penghuni_NIK` bigint(20) UNSIGNED NOT NULL,
   `penghuni_status` enum('tinggal','keluar') NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+
+--
+-- Dumping data for table `penghuni`
+--
+
+INSERT INTO `penghuni` (`penghuni_id`, `penghuni_nama_depan`, `penghuni_nama_belakang`, `penghuni_tgl_lahir`, `ruangan_no`, `penghuni_NIK`, `penghuni_status`) VALUES
+(20105, 'Ananda', 'Muharriz', '1999-04-18', 104, 171402052, 'tinggal');
 
 -- --------------------------------------------------------
 
@@ -184,8 +189,7 @@ INSERT INTO `ruangan` (`ruangan_no`, `type_id`, `ruangan_status`) VALUES
 (105, 1102, 'kosong'),
 (106, 1102, 'ditempati'),
 (107, 1104, 'kosong'),
-(108, 1101, 'kosong'),
-(109, 1102, 'kosong');
+(108, 1102, 'ditempati');
 
 -- --------------------------------------------------------
 
@@ -228,7 +232,8 @@ CREATE TABLE `user` (
 
 INSERT INTO `user` (`user_id`, `user_username`, `user_password`, `user_level`) VALUES
 (20101, 'root', 'root', 'admin'),
-(20102, 'jakcie', '1234', 'penghuni');
+(20102, 'jakcie', '1234', 'penghuni'),
+(20105, 'muharriz', '1804', 'penghuni');
 
 -- --------------------------------------------------------
 
@@ -307,7 +312,7 @@ ALTER TABLE `fasilitas_ruangan`
 --
 ALTER TABLE `penghuni`
   ADD PRIMARY KEY (`penghuni_id`),
-  ADD KEY `constraint_penghuni_2` (`penghuni_nomor_kamar`);
+  ADD KEY `ruangan_no` (`ruangan_no`);
 
 --
 -- Indexes for table `ruangan`
@@ -336,13 +341,13 @@ ALTER TABLE `user`
 -- AUTO_INCREMENT for table `fasilitas`
 --
 ALTER TABLE `fasilitas`
-  MODIFY `fasilitas_id` int(8) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=20008;
+  MODIFY `fasilitas_id` int(8) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=20006;
 
 --
 -- AUTO_INCREMENT for table `fasilitas_ruangan`
 --
 ALTER TABLE `fasilitas_ruangan`
-  MODIFY `fasilitas_ruangan_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=1230012;
+  MODIFY `fasilitas_ruangan_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=1230014;
 
 --
 -- AUTO_INCREMENT for table `type_ruangan`
@@ -354,7 +359,7 @@ ALTER TABLE `type_ruangan`
 -- AUTO_INCREMENT for table `user`
 --
 ALTER TABLE `user`
-  MODIFY `user_id` int(8) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=20103;
+  MODIFY `user_id` int(8) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=20106;
 
 --
 -- Constraints for dumped tables
@@ -371,8 +376,8 @@ ALTER TABLE `fasilitas_ruangan`
 -- Constraints for table `penghuni`
 --
 ALTER TABLE `penghuni`
-  ADD CONSTRAINT `constraint_penghuni_1` FOREIGN KEY (`penghuni_id`) REFERENCES `user` (`user_id`) ON UPDATE CASCADE,
-  ADD CONSTRAINT `constraint_penghuni_2` FOREIGN KEY (`penghuni_nomor_kamar`) REFERENCES `ruangan` (`ruangan_no`) ON UPDATE CASCADE;
+  ADD CONSTRAINT `constraint_penghuni_1` FOREIGN KEY (`penghuni_id`) REFERENCES `user` (`user_id`) ON DELETE CASCADE ON UPDATE CASCADE,
+  ADD CONSTRAINT `constraint_penghuni_2` FOREIGN KEY (`ruangan_no`) REFERENCES `ruangan` (`ruangan_no`) ON UPDATE CASCADE;
 
 --
 -- Constraints for table `ruangan`
