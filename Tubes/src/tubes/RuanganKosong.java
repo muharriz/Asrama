@@ -20,6 +20,11 @@ public class RuanganKosong extends javax.swing.JFrame {
      */
     public RuanganKosong(int state) {
         initComponents();
+        if(state != 2){
+        buttonEdit.setVisible(false);
+        buttonTambah.setVisible(false);
+        buttonHapus.setVisible(false);
+        }
         this.state = state;
         table();
         result = null;

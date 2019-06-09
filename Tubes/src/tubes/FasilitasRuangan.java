@@ -29,6 +29,12 @@ public class FasilitasRuangan extends javax.swing.JFrame {
      
     public FasilitasRuangan(int state) {
         initComponents();
+        if(state != 2){
+           jComboBox1.setVisible(false);
+           jButton2.setVisible(false);
+           jButton3.setVisible(false);
+           jButton4.setVisible(false);
+        }
         //membuat kelas koneksi
         con = new Connectivity();
         this.state = state;
