@@ -3,14 +3,10 @@
     <editor-bookmarks xmlns="http://www.netbeans.org/ns/editor-bookmarks/2" lastBookmarkId="0"/>
     <open-files xmlns="http://www.netbeans.org/ns/projectui-open-files/2">
         <group>
-            <file>file:/F:/Kuliah/PBOL/Program/Java/Asrama/Tubes/src/tubes/Connectivity.java</file>
-            <file>file:/F:/Kuliah/PBOL/Program/Java/Asrama/Tubes/src/tubes/lihatSemuaPenghuni.java</file>
-            <file>file:/F:/Kuliah/PBOL/Program/Java/Asrama/Tubes/src/tubes/TambahFasilitasRuangan.java</file>
-            <file>file:/F:/Kuliah/PBOL/Program/Java/Asrama/Tubes/src/tubes/editFasilitasRuangan.java</file>
-            <file>file:/F:/Kuliah/PBOL/Program/Java/Asrama/Tubes/src/tubes/editPenghuni.java</file>
-            <file>file:/F:/Kuliah/PBOL/Program/Java/Asrama/Tubes/src/tubes/FasilitasRuangan.java</file>
+            <file>file:/F:/Kuliah/PBOL/Program/Java/Asrama/Tubes/src/tubes/RuanganKosong.java</file>
+            <file>file:/F:/Kuliah/PBOL/Program/Java/Asrama/Tubes/src/tubes/FasilitasRusak.java</file>
             <file>file:/F:/Kuliah/PBOL/Program/Java/Asrama/Tubes/src/tubes/UI.java</file>
-            <file>file:/F:/Kuliah/PBOL/Program/Java/Asrama/Tubes/src/tubes/tambahPenghuni.java</file>
+            <file>file:/F:/Kuliah/PBOL/Program/Java/Asrama/Tubes/src/tubes/Login.java</file>
         </group>
     </open-files>
 </project-private>

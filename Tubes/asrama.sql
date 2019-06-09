@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: Jun 08, 2019 at 05:30 PM
+-- Generation Time: Jun 09, 2019 at 04:28 PM
 -- Server version: 10.1.26-MariaDB
 -- PHP Version: 7.1.9
 
@@ -101,6 +101,19 @@ CREATE TABLE `getjumlahkamar` (
 --
 CREATE TABLE `gettipekamar` (
 `type_nama` varchar(20)
+);
+
+-- --------------------------------------------------------
+
+--
+-- Stand-in structure for view `lihatfasilitasrusak`
+-- (See below for the actual view)
+--
+CREATE TABLE `lihatfasilitasrusak` (
+`fasilitas_ruangan_id` int(11)
+,`fasilitas_nama` varchar(40)
+,`kamar_no` int(8)
+,`fr_kondisi` enum('rusak','bagus')
 );
 
 -- --------------------------------------------------------
@@ -261,6 +274,15 @@ CREATE ALGORITHM=UNDEFINED DEFINER=`root`@`localhost` SQL SECURITY DEFINER VIEW 
 DROP TABLE IF EXISTS `gettipekamar`;
 
 CREATE ALGORITHM=UNDEFINED DEFINER=`root`@`localhost` SQL SECURITY DEFINER VIEW `gettipekamar`  AS  select `type_ruangan`.`type_nama` AS `type_nama` from `type_ruangan` ;
+
+-- --------------------------------------------------------
+
+--
+-- Structure for view `lihatfasilitasrusak`
+--
+DROP TABLE IF EXISTS `lihatfasilitasrusak`;
+
+CREATE ALGORITHM=UNDEFINED DEFINER=`root`@`localhost` SQL SECURITY DEFINER VIEW `lihatfasilitasrusak`  AS  select `fasilitas_ruangan`.`fasilitas_ruangan_id` AS `fasilitas_ruangan_id`,`fasilitas`.`fasilitas_nama` AS `fasilitas_nama`,`fasilitas_ruangan`.`kamar_no` AS `kamar_no`,`fasilitas_ruangan`.`fr_kondisi` AS `fr_kondisi` from (`fasilitas_ruangan` join `fasilitas` on((`fasilitas_ruangan`.`fasilitas_id` = `fasilitas`.`fasilitas_id`))) where (`fasilitas_ruangan`.`fr_kondisi` = 'rusak') ;
 
 -- --------------------------------------------------------
 
